@@ -1,0 +1,36 @@
+program VisitorManage;
+
+uses
+  Windows,
+  Forms,
+  ufrmMain in 'ufrmMain.pas' {frmMain},
+  ufrmBrightness in 'ufrmBrightness.pas' {frmBrightness},
+  ufrmLogin in 'ufrmLogin.pas' {frmLogin},
+  udmMain in 'udmMain.pas' {dmMain: TDataModule},
+  uSqliteDBController in 'uSqliteDBController.pas',
+  ufrmChangePassword in 'ufrmChangePassword.pas' {frmChangePassword};
+
+{$R *.res}
+
+var
+  MutexHandle: THandle;
+
+begin
+  MutexHandle := CreateMutex(nil, True, '金阳访客通行系统');
+
+  if (MutexHandle <> 0) and (GetLastError = ERROR_ALREADY_EXISTS) then
+  begin
+    Application.MessageBox('程序已经运行, 按确定关闭此窗口!', '系统提示:', MB_OK);
+    CloseHandle(MutexHandle);
+    Exit;
+  end;
+
+  Application.Initialize;
+  Application.Title := '金阳访客通行系统';
+  Application.CreateForm(TfrmMain, frmMain);
+  Application.CreateForm(TfrmBrightness, frmBrightness);
+  Application.CreateForm(TfrmLogin, frmLogin);
+  Application.CreateForm(TdmMain, dmMain);
+  Application.CreateForm(TfrmChangePassword, frmChangePassword);
+  Application.Run;
+end.
